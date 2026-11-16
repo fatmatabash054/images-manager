@@ -1,0 +1,37 @@
+name: Docker build & smoke test
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Build the web image
+        run: docker compose build
+
+      - name: Start the stack
+        run: docker compose up -d
+
+      - name: Wait for the app to become healthy
+        run: |
+          for i in $(seq 1 30); do
+            status=$(docker inspect --format '{{.State.Health.Status}}' images-manager-web || true)
+            echo "web health: $status"
+            [ "$status" = "healthy" ] && exit 0
+            sleep 5
+          done
+          docker compose logs
+          exit 1
+
+      - name: Smoke test
+        run: curl -fsS http://localhost:8080/login.php | grep -q "Welcome back"
+
+      - name: Tear down
+        if: always()
+        run: docker compose down -v
