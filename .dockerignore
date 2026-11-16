@@ -1,0 +1,14 @@
+.git
+.github
+.gitignore
+.env
+.env.example
+docs/
+db/
+README.md
+Makefile
+docker-compose.yml
+Dockerfile
+.dockerignore
+src/uploads/*
+!src/uploads/.gitkeep

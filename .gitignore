@@ -1,0 +1,12 @@
+# Secrets / local config
+.env
+
+# User uploads (keep the folder, not the files)
+src/uploads/*
+!src/uploads/.gitkeep
+
+# OS / editor
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
