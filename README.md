@@ -1,4 +1,4 @@
-# Images Manager
+﻿# Images Manager
 
 A small PHP + MySQL web app where users register, log in, and manage their own
 images (upload, rename, delete). Packaged with Docker so anyone can run it with
@@ -38,7 +38,7 @@ images-manager/
 Requirements: Docker Desktop (or Docker Engine + Compose plugin).
 
 ```bash
-git clone https://github.com/<your-username>/images-manager.git
+git clone https://github.com/fatmatabash054/images-manager.git
 cd images-manager
 cp .env.example .env        # optional - defaults work for a demo
 docker compose up -d --build
