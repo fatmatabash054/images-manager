@@ -1,0 +1,39 @@
+services:
+  db:
+    image: mysql:8.0
+    container_name: images-manager-db
+    restart: unless-stopped
+    environment:
+      MYSQL_DATABASE: ${DB_NAME:-image_manager}
+      MYSQL_USER: ${DB_USER:-imguser}
+      MYSQL_PASSWORD: ${DB_PASSWORD:-imgpass}
+      MYSQL_ROOT_PASSWORD: ${DB_ROOT_PASSWORD:-rootpass}
+    volumes:
+      - db_data:/var/lib/mysql
+      - ./db/init.sql:/docker-entrypoint-initdb.d/init.sql:ro
+    healthcheck:
+      test: ["CMD-SHELL", "mysqladmin ping -h localhost -u root -p$$MYSQL_ROOT_PASSWORD --silent"]
+      interval: 5s
+      timeout: 5s
+      retries: 20
+
+  web:
+    build: .
+    container_name: images-manager-web
+    restart: unless-stopped
+    ports:
+      - "${WEB_PORT:-8080}:80"
+    environment:
+      DB_HOST: db
+      DB_NAME: ${DB_NAME:-image_manager}
+      DB_USER: ${DB_USER:-imguser}
+      DB_PASSWORD: ${DB_PASSWORD:-imgpass}
+    depends_on:
+      db:
+        condition: service_healthy
+    volumes:
+      - uploads:/var/www/html/uploads
+
+volumes:
+  db_data:
+  uploads:
